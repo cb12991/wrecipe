@@ -1,11 +1,26 @@
-Package: wrecipe
 Type: Package
-Title: What the Package Does (Title Case)
-Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
-License: What license is it under?
+Package: wrecipe
+Title: Build Recipes With R 
+Version: 0.0.0.9000
+Authors@R: person('Cody', 'Buehler', , 'cb12991@me.com', role = c('aut', 'cre'))
+Description: Put together a recipe using R in a standard structure. This is 
+    primarly used to provide webpages recipe metadata in a consistent format.
+License: GPL (>= 3)
 Encoding: UTF-8
 LazyData: true
+Suggests: 
+    covr,
+    testthat (>= 3.0.0)
+Imports: 
+    cli,
+    httr,
+    jpeg,
+    lubridate,
+    mime,
+    png,
+    R6,
+    rlang,
+    xml2
+RoxygenNote: 7.2.2
+Roxygen: list(markdown = TRUE)
+Config/testthat/edition: 3
