@@ -1,18 +1,43 @@
 #' @export
 Instruction <- R6::R6Class(
   classname = 'Instruction',
+
   public = list(
-    step = 0,
-
-    initialize = function(text, time, active = TRUE) {
-      # assert_that(is.character(text), length(text) == 1)
-      # assert_that(is.duration(time), length(time) == 1)
-      # assert_that(is.logical(active), length(active) == 1)
-
-      self$step <- self$step + 1
-      self$text <- text
-      self$time <- time
-      self$active <- active
+    initialize = function(text) {
+      private$.text$value <- private$.text$validate(text)
     }
+  ),
+
+  active = list(
+    text = function(value) {
+      if (missing(value)) {
+        private$.name$value
+      } else {
+        private$.name$value <- private$.name$validate(value)
+        invisible(self)
+      }
+    }
+  ),
+
+  private = list(
+    .text = list(
+      value = NULL,
+      validate = function(x) {
+        if (length(x) != 1) {
+          cli::cli_abort(c(
+            'Length != 1',
+            '',
+            i = 'Only provide a one recipe instruction per {.cls Instruction}
+                 object.'
+          ))
+        }
+        if (!is.character(x)) {
+          cli::cli_abort(
+            'Is not a character vector'
+          )
+        }
+        invisible(x)
+      }
+    )
   )
 )

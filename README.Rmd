@@ -20,38 +20,72 @@ knitr::opts_chunk$set(
 [![R-CMD-check](https://github.com/cb12991/wrecipes/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/cb12991/wrecipes/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
-The goal of wrecipe is to ...
+`wrecipe` is a package that provides tools for storing recipe elements into a
+consistent format. This is primarily used for my personal website after
+web-scraping the recipies from the internet.
 
 ## Installation
 
-You can install the development version of wrecipe from [GitHub](https://github.com/) with:
+This package has not been submitted to CRAN, but may in the future. You can
+install the development version of `wrecipe` from [GitHub](https://github.com/)
+with:
 
-``` r
-# install.packages("devtools")
-devtools::install_github("cb12991/wrecipes")
+```{r, eval=FALSE}
+# install.packages('pak')
+pak::pak('cb12991/wrecipes')
 ```
 
 ## Example
 
-This is a basic example which shows you how to solve a common problem:
+We will showcase a simple recipe for bread. You can pass all the elements of the recipe to the initialization call if desired, but we will add each element sequentially for illustrative purposes.
 
-```{r example}
+The only thing a `Recipe` object requires at initialization is a name. 
+
+```{r}
 library(wrecipe)
-## basic example code
+(example <- Recipe$new(name = 'Bread'))
 ```
 
-What is special about using `README.Rmd` instead of just `README.md`? You can include R chunks like so:
+Next, we can add some summary detail for the recipe.
 
-```{r cars}
-summary(cars)
+```{r}
+example$summary <- 'This is a simple recipe for white bread.'
+example
 ```
 
-You'll still need to render `README.Rmd` regularly, to keep `README.md` up-to-date. `devtools::build_readme()` is handy for this. You could also use GitHub Actions to re-render `README.Rmd` every time you push. An example workflow can be found here: <https://github.com/r-lib/actions/tree/v1/examples>.
+The next four elements are additional `R6` objects that share the same purpose of storing data in a consistent format. 
 
-You can also embed plots, for example:
+For recipe images, metadata can be stored as an `<Image>` object. Each `<Image>` object corresponds to a single image, but you can provide a list of `<Image>` objects to the `<Recipe>`.
 
-```{r pressure, echo = FALSE}
-plot(pressure)
+```{r}
+imgs <- lapply(
+  X = c(
+  'https://media.spokesman.com/photos/2011/10/12/Food_Crusty_Bread_12.jpg',
+  'https://i.pinimg.com/originals/63/ed/0a/63ed0ab91c97ca072a161019797eb002.jpg',
+  'http://www.clipartbest.com/cliparts/dir/6aG/dir6aGr4T.jpg'
+  ),
+  FUN = function(.url) {Image$new(url = .url)}
+)
 ```
 
-In that case, don't forget to commit and push the resulting figure files, so they display on GitHub and CRAN.
+You can either pass in a file or a URL that points to the image (I did a simple Google search for bread for the images used above). Once initialized, you can preview the images using its `plot()` method.
+
+```{r}
+# Plotting images from URLs requires them to first be downloaded. If you do not
+# specify where you would like the image file to be downloaded using `file`, 
+# they will be saved in the current working directory. We'll use a temp location
+# for this example.
+
+withr::with_dir(tempdir(), {
+  for (i in imgs) { i$plot() }  
+})
+```
+
+Add the list of images to the recipe.
+
+```{r}
+example$images <- imgs
+example
+```
+
+Examples for the remaining recipe elements will be added at a later time.
