@@ -56,8 +56,91 @@
 
       </header><div class="row">
   <div class="contents col-md-9">
-Put together a recipe using R in a standard structure. This is 
-    primarly used to provide webpages recipe metadata in a consistent format.
+<div class="section level1">
+<div class="page-header"><h1 id="wrecipe">wrecipe<a class="anchor" aria-label="anchor" href="#wrecipe"></a>
+</h1></div>
+<!-- badges: start -->
+
+<p><code>wrecipe</code> is a package that provides tools for storing recipe elements into a consistent format. This is primarily used for my personal website after web-scraping the recipies from the internet.</p>
+<div class="section level2">
+<h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
+</h2>
+<p>This package has not been submitted to CRAN, but may in the future. You can install the development version of <code>wrecipe</code> from <a href="https://github.com/" class="external-link">GitHub</a> with:</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># install.packages('pak')</span></span>
+<span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="http://pak.r-lib.org/reference/pak.html" class="external-link">pak</a></span><span class="op">(</span><span class="st">'cb12991/wrecipes'</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="example">Example<a class="anchor" aria-label="anchor" href="#example"></a>
+</h2>
+<p>We will showcase a simple recipe for bread. You can pass all the elements of the recipe to the initialization call if desired, but we will add each element sequentially for illustrative purposes.</p>
+<p>The only thing a <code>Recipe</code> object requires at initialization is a name.</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">wrecipe</span><span class="op">)</span></span>
+<span><span class="op">(</span><span class="va">example</span> <span class="op">&lt;-</span> <span class="va">Recipe</span><span class="op">$</span><span class="fu">new</span><span class="op">(</span>name <span class="op">=</span> <span class="st">'Bread'</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; &lt;Recipe&gt;</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;   Bread</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;   NA</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;   Image Count: 0</span></span>
+<span><span class="co">#&gt;   Ingredient Count: 0</span></span>
+<span><span class="co">#&gt;   Equipment Count: 0</span></span>
+<span><span class="co">#&gt;   Instruction Count: 0</span></span></code></pre></div>
+<p>Next, we can add some summary detail for the recipe.</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">example</span><span class="op">$</span><span class="va">summary</span> <span class="op">&lt;-</span> <span class="st">'This is a simple recipe for white bread.'</span></span>
+<span><span class="va">example</span></span>
+<span><span class="co">#&gt; &lt;Recipe&gt;</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;   Bread</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;   This is a simple recipe for white bread.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;   Image Count: 0</span></span>
+<span><span class="co">#&gt;   Ingredient Count: 0</span></span>
+<span><span class="co">#&gt;   Equipment Count: 0</span></span>
+<span><span class="co">#&gt;   Instruction Count: 0</span></span></code></pre></div>
+<p>The next four elements are additional <code>R6</code> objects that share the same purpose of storing data in a consistent format.</p>
+<p>For recipe images, metadata can be stored as an <code>&lt;Image&gt;</code> object. Each <code>&lt;Image&gt;</code> object corresponds to a single image, but you can provide a list of <code>&lt;Image&gt;</code> objects to the <code>&lt;Recipe&gt;</code>.</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">imgs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span></span>
+<span>  X <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>  <span class="st">'https://media.spokesman.com/photos/2011/10/12/Food_Crusty_Bread_12.jpg'</span>,</span>
+<span>  <span class="st">'https://i.pinimg.com/originals/63/ed/0a/63ed0ab91c97ca072a161019797eb002.jpg'</span>,</span>
+<span>  <span class="st">'http://www.clipartbest.com/cliparts/dir/6aG/dir6aGr4T.jpg'</span></span>
+<span>  <span class="op">)</span>,</span>
+<span>  FUN <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">.url</span><span class="op">)</span> <span class="op">{</span><span class="va">Image</span><span class="op">$</span><span class="fu">new</span><span class="op">(</span>url <span class="op">=</span> <span class="va">.url</span><span class="op">)</span><span class="op">}</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p>You can either pass in a file or a URL that points to the image (I did a simple Google search for bread for the images used above). Once initialized, you can preview the images using its <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code> method.</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Plotting images from URLs requires them to first be downloaded. If you do not</span></span>
+<span><span class="co"># specify where you would like the image file to be downloaded using `file`, </span></span>
+<span><span class="co"># they will be saved in the current working directory. We'll use a temp location</span></span>
+<span><span class="co"># for this example.</span></span>
+<span></span>
+<span><span class="fu">withr</span><span class="fu">::</span><span class="fu"><a href="https://withr.r-lib.org/reference/with_dir.html" class="external-link">with_dir</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>, <span class="op">{</span></span>
+<span>  <span class="kw">for</span> <span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="va">imgs</span><span class="op">)</span> <span class="op">{</span> <span class="va">i</span><span class="op">$</span><span class="fu">plot</span><span class="op">(</span><span class="op">)</span> <span class="op">}</span>  </span>
+<span><span class="op">}</span><span class="op">)</span></span></code></pre></div>
+<p><img src="reference/figures/README-unnamed-chunk-6-1.png" width="100%"><img src="reference/figures/README-unnamed-chunk-6-2.png" width="100%"><img src="reference/figures/README-unnamed-chunk-6-3.png" width="100%"></p>
+<p>Add the list of images to the recipe.</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">example</span><span class="op">$</span><span class="va">images</span> <span class="op">&lt;-</span> <span class="va">imgs</span></span>
+<span><span class="va">example</span></span>
+<span><span class="co">#&gt; &lt;Recipe&gt;</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;   Bread</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;   This is a simple recipe for white bread.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;   Image Count: 3</span></span>
+<span><span class="co">#&gt;   Ingredient Count: 0</span></span>
+<span><span class="co">#&gt;   Equipment Count: 0</span></span>
+<span><span class="co">#&gt;   Instruction Count: 0</span></span></code></pre></div>
+<p>Examples for the remaining recipe elements will be added at a later time.</p>
+</div>
+</div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -92,7 +175,13 @@ Put together a recipe using R in a standard structure. This is
 </ul>
 </div>
 
-
+<div class="dev-status">
+<h2 data-toc-skip>Dev status</h2>
+<ul class="list-unstyled">
+<li><a href="https://app.codecov.io/gh/cb12991/wrecipes?branch=main" class="external-link"><img src="https://codecov.io/gh/cb12991/wrecipes/branch/main/graph/badge.svg" alt="Codecov test coverage"></a></li>
+<li><a href="https://github.com/cb12991/wrecipes/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/cb12991/wrecipes/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></li>
+</ul>
+</div>
 
   </div>
 </div>
