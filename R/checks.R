@@ -117,9 +117,10 @@ check_url_connection <- function(
 check_file_exists <- function(
     x,
     call = rlang::caller_env(),
+    allow_null = TRUE,
     ...
 ) {
-  if (file.exists(x)) {
+  if ((is.null(x) & allow_null) || file.exists(x)) {
     return(invisible(TRUE))
   }
   cli::cli_abort(
@@ -136,7 +137,7 @@ check_same_class <- function(
     ...
 ) {
   x <- as.list(x)
-  y <- vapply(x, inherits, logical(), what = class)
+  y <- vapply(x, inherits, logical(1), what = class)
   if (length(x) == 0 || length(x[!y]) == 0) {
     return(invisible(TRUE))
   }
