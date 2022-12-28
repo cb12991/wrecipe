@@ -22,7 +22,7 @@ can install the development version of `wrecipe` from
 
 ``` r
 # install.packages('pak')
-pak::pak('cb12991/wrecipes')
+pak::pak('cb12991/wrecipe')
 ```
 
 ## Example
