@@ -12,15 +12,14 @@ Suggests:
     covr,
     testthat (>= 3.0.0)
 Imports: 
+    R6,
     cli,
     httr,
+    xml2,
     jpeg,
-    lubridate,
-    mime,
     png,
-    R6,
-    rlang,
-    xml2
+    mime,
+    rlang
 RoxygenNote: 7.2.2
 Roxygen: list(markdown = TRUE)
 Config/testthat/edition: 3
