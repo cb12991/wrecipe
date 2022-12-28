@@ -1,4 +1,30 @@
+#' R6 Class for a recipe ingredient
+#'
+#' @section Creating the ingredient object:
+#' An `Ingredient` object is an R6 object, and it can be created using
+#' `Ingredient$new()`. The name of the ingredient piece is required, but the
+#' amount and unit of the ingredient can be omitted for a generalized
+#' ingredient (e.g., canola oil).
+#'
+#' \describe{
+#'   \item{name}{
+#'     Scalar character vector; the name of the piece of equipment.
+#'   }
+#'   \item{amount}{
+#'     Scalar numeric vector; the numeric quantity required of the ingredient in
+#'     a recipe. To be used in conjunction with "unit".
+#'   }
+#'   \item{unit}{
+#'     Scalar character vector; the unit of measurement for the ingredient
+#'     (e.g., cup, gallon, handful, etc.). To be used in conjunction with
+#'     "amount".
+#'   }
+#' }
+#'
 #' @export
+#' @name Ingredient
+NULL
+
 Ingredient <- R6::R6Class(
   classname = 'Ingredient',
 
@@ -40,71 +66,44 @@ Ingredient <- R6::R6Class(
   private = list(
     .name = list(
       value = NULL,
-      validate = function(x) {
-        if (is.null(x)) {
-          cli::cli_abort(
-            'All {.cls Ingredient} objects must at minimum have a name.'
-          )
-        }
-        if (length(x) != 1) {
-          cli::cli_abort(c(
-            'Length != 1',
-            i = 'Only provide a single name for each ingredient.'
-          ))
-        }
-        if (!is.character(x)) {
-          cli::cli_abort(
-            'Is not a character vector'
-          )
-        }
-        invisible(x)
+      validate = function(name) {
+        lapply(
+          X = list(check_required, check_length, check_mode),
+          FUN = rlang::exec,
+          x = name,
+          mode = 'character',
+          n = 1
+        )
+        invisible(name)
       }
     ),
     .amount =  list(
       value = NULL,
-      validate = function(x) {
-        if (!is.numeric(x)) {
-          cli::cli_abort(
-            'Not a number'
-          )
-        }
-        if (x <= 0) {
-          cli::cli_abort(
-            'Non-NA amounts must be greater than or equal to 1.',
-          )
-        }
-        if (length(x) != 1) {
-          cli::cli_abort(c(
-            'Length != 1',
-            '',
-            i = 'Only provide a single {.field amount} value for each
-                   ingredient.'
-          ))
-        }
-        invisible(x)
+      validate = function(amount) {
+        lapply(
+          X = list(check_length, check_mode, check_number_in_range),
+          FUN = rlang::exec,
+          x = amount,
+          n = 1,
+          mode = 'numeric',
+          range = c(0, Inf),
+          inclusive = TRUE,
+          allow_na = TRUE
+        )
+        invisible(amount)
       }
     ),
     .unit =  list(
       value = NULL,
-      validate = function(x) {
-        if (!is.character(x)) {
-          cli::cli_abort(c(
-            'Is not a character vector',
-            '',
-            i = 'Enter a common {.field unit} used in recipes, i.e., cup,
-                   tablespoon, gram, etc.'
-          ))
-        }
-
-        if (length(x) != 1) {
-          cli::cli_abort(c(
-            'Length != 1',
-            '',
-            i = 'Only provide a single {.field unit} value for each
-                   ingredient.'
-          ))
-        }
-        invisible(x)
+      validate = function(unit) {
+        lapply(
+          X = list(check_length, check_mode),
+          FUN = rlang::exec,
+          x = unit,
+          mode = 'character',
+          n = 1
+        )
+        invisible(unit)
       }
     )
   )

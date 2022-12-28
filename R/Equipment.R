@@ -1,4 +1,24 @@
+#' R6 Class for recipe equipment
+#'
+#' @section Creating the equipment object:
+#' An `Equipment` object is an R6 object, and it can be created using
+#' `Equipment$new()`. The name of the equipment piece is required, and the
+#' quantity can be omitted if desired.
+#'
+#' \describe{
+#'   \item{name}{
+#'     Scalar character vector; the name of the piece of equipment.
+#'   }
+#'   \item{quantity}{
+#'     Scalar numeric vector; the number of equipment units needed. Defaults to
+#'     1.
+#'   }
+#' }
+#'
 #' @export
+#' @name Equipment
+NULL
+
 Equipment <- R6::R6Class(
   classname = 'Equipment',
 
@@ -6,6 +26,7 @@ Equipment <- R6::R6Class(
     initialize = function(name, quantity = 1) {
       private$.name$value <- private$.name$validate(name)
       private$.quantity$value <- private$.quantity$validate(quantity)
+      invisible(self)
     }
   ),
 
@@ -31,40 +52,29 @@ Equipment <- R6::R6Class(
   private = list(
     .name = list(
       value = NULL,
-      validate = function(x) {
-        if (is.null(x)) {
-          cli::cli_abort(
-            'All {.cls Equipment} objects must at minimum have a name.'
-          )
-        }
-        if (length(x) != 1) {
-          cli::cli_abort(c(
-            'Length != 1',
-            i = 'Only provide a single name for the piece of equipment.'
-          ))
-        }
-        if (!is.character(x)) {
-          cli::cli_abort(
-            'Is not a character vector'
-          )
-        }
-        invisible(x)
+      validate = function(name) {
+        lapply(
+          X = list(check_required, check_length, check_mode),
+          FUN = rlang::exec,
+          x = name,
+          n = 1,
+          mode = 'character'
+        )
+        invisible(name)
       }
     ),
     .quantity =  list(
       value = NULL,
-      validate = function(x) {
-        if (!is.numeric(x)) {
-          cli::cli_abort(
-            'Is not a number'
-          )
-        }
-        if (x <= 0) {
-          cli::cli_abort(
-            'Must be greater than or equal to 1',
-          )
-        }
-        invisible(x)
+      validate = function(quantity) {
+        lapply(
+          X = list(check_length, check_mode, check_number_in_range),
+          FUN = rlang::exec,
+          x = quantity,
+          n = 1,
+          mode = 'numeric',
+          range = c(1, Inf)
+        )
+        invisible(quantity)
       }
     )
   )

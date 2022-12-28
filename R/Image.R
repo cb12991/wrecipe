@@ -1,5 +1,41 @@
-#' @importFrom rlang %||%
+#' R6 Class for images associated with a recipe
+#'
+#' Recipe images are not required, but helps the viewer visualize what the
+#' recipe is supposed to look like. An `Image` can either be a local file or a
+#' URL that points to the file. In the case of the latter, a method is included
+#' to download the image.
+#'
+#' This class also includes a method to "plot" the image given it is a
+#' recognized image format (.jpeg or .png as of now). This helps view which
+#' images to add to a `Recipe` object without having to open up the image
+#' outside of RStudio.
+#'
+#' @section Creating the image object:
+#' An `Image` is an R6 object, and it can be created using
+#' `Image$new()`. A file path or URL pointing to a valid image is required
+#' upon initialization; the name of the image can be determined automatically if
+#' not provided.
+#'
+#' \describe{
+#'   \item{file}{
+#'     Scalar character vector; the path to an image file. This image needs to
+#'     be of JPEG or PNG format.
+#'   }
+#'   \item{url}{
+#'     Scalar character vector; the URL pointing to an image. Also needs to be
+#'     of JPEG or PNG format.
+#'   }
+#'   \item{name}{
+#'     Scalar character vector; the name of the image, for reference. You can
+#'     specify directly or omit and the name will be determined using the image
+#'     file path or URL.
+#'   }
+#' }
+#'
 #' @export
+#' @name Image
+NULL
+
 Image <- R6::R6Class(
   classname = 'Image',
 
@@ -7,7 +43,7 @@ Image <- R6::R6Class(
     initialize = function(
       file = NULL,
       url = NULL,
-      name = NA_character_
+      name = basename(file %||% url)
     ) {
       if (is.null(file) & is.null(url)) {
         cli::cli_abort('Must provide either a URL or file path to an image.')
@@ -16,12 +52,14 @@ Image <- R6::R6Class(
       private$.file$value <- private$.file$validate(file)
       private$.url$value <- private$.url$validate(url)
       private$.name$value <- private$.name$validate(name)
-      private$.img_format$value <- private$.img_format$validate(file %||% url)
 
       invisible(self)
     },
 
     download = function() {
+      if (is.null(url)) {
+        cli::cli_abort('Cannot download image without providing a URL.')
+      }
       private$.file$value <- xml2::download_html(private$.url$value)
       invisible(self)
     },
@@ -30,9 +68,17 @@ Image <- R6::R6Class(
       if (is.null(private$.file$value)) {
         self$download()
       }
+      fmt <- mime::guess_type(private$.file$value %||% private$.url$value)
+
+      if (!grepl('^image', fmt)) {
+        cli::cli_abort(
+          'Image format not recognized: {.field {fmt}}.',
+          call = caller_env()
+        )
+      }
 
       bitmap <- switch(
-        private$.img_format$value,
+        fmt,
         'image/png' = png::readPNG(private$.file$value, native = TRUE),
         'image/jpeg' = jpeg::readJPEG(private$.file$value, native = TRUE)
       )
@@ -58,7 +104,7 @@ Image <- R6::R6Class(
         private$.file$value
       } else {
         private$.file$value <- private$.file$validate(value)
-        self
+        invisible(self)
       }
     },
     url = function(value) {
@@ -66,7 +112,7 @@ Image <- R6::R6Class(
         private$.url$value
       } else {
         private$.url$value <- private$.url$validate(value)
-        self
+        invisible(self)
       }
     },
     name = function(value) {
@@ -74,15 +120,7 @@ Image <- R6::R6Class(
         private$.name$value
       } else {
         private$.name$value <- private$.name$validate(value)
-        self
-      }
-    },
-    img_format = function(value) {
-      if (missing(value)) {
-        private$.img_format$value
-      } else {
-        private$.img_format$value <- private$.img_format$validate(value)
-        self
+        invisible(self)
       }
     }
   ),
@@ -90,87 +128,57 @@ Image <- R6::R6Class(
   private = list(
     .file = list(
       value = NULL,
-      validate = function(x) {
-        if (!is.null(x)) {
-          if (length(x) != 1) {
-            cli::cli_abort(c(
-              'Length != 1',
-              '',
-              i = 'Only provide one file path per image.'
-            ))
-          }
-          if (!is.character(x)) {
-            cli::cli_abort(
-              'Is not a character vector.'
-            )
-          }
-          if (!file.exists(x)) {
-            cli::cli_abort(
-              'Could not find file at {.file {x}}.'
-            )
-          }
+      validate = function(file) {
+        if (is.null(file) && is.null(private$.url$value)) {
+          cli::cli_abort(
+            'Cannot set {.field file} to {.value NULL} if {.field url} is
+             {.value NULL}.',
+            call = caller_env()
+          )
         }
-        invisible(x)
+        lapply(
+          X = list(check_length, check_mode, check_file_exists),
+          FUN = rlang::exec,
+          x = file,
+          n = 1,
+          mode = 'character'
+        )
+        invisible(file)
       }
     ),
 
     .url = list(
       value = NULL,
-      validate = function(x) {
-        if (!is.null(x)) {
-          if (length(x) != 1) {
-            cli::cli_abort(c(
-              'Length != 1',
-              '',
-              i = 'Only provide one URL path per image.'
-            ))
-          }
-          if (!is.character(x)) {
-            cli::cli_abort(
-              'Is not a character vector.'
-            )
-          }
-          if (httr::GET(x)$status_code != 200) {
-            cli::cli_abort(
-              'URL {.url {url}} did not result in successful HTTP response.'
-            )
-          }
+      validate = function(url) {
+        if (is.null(url) && is.null(private$.file$value)) {
+          cli::cli_abort(
+            'Cannot set {.field url} to {.value NULL} if {.field file} is
+             {.value NULL}.',
+            call = caller_env()
+          )
         }
-        invisible(x)
+        lapply(
+          X = list(check_length, check_mode, check_url_connection),
+          FUN = rlang::exec,
+          x = url,
+          n = 1,
+          mode = 'character'
+        )
+        invisible(url)
       }
     ),
 
     .name = list(
       value = NULL,
-      validate = function(x) {
-        if (!is.null(x)) {
-          if (length(x) != 1) {
-            cli::cli_abort(c(
-              'Length != 1',
-              i = 'Only provide one name per image.'
-            ))
-          }
-          if (!is.character(x)) {
-            cli::cli_abort(
-              'Is not a character vector.'
-            )
-          }
-        }
-        invisible(x)
-      }
-    ),
-
-    .img_format = list(
-      value = NULL,
-      validate = function(x) {
-        img_format <- mime::guess_type(x)
-        if (!grepl('^image', img_format)) {
-          cli::cli_abort(c(
-            'The following file does not appear to be an image:',
-            ' ' = '{.file {x}}'
-          ))
-        }
-        invisible(img_format)
+      validate = function(name) {
+        lapply(
+          X = list(check_length, check_mode),
+          FUN = rlang::exec,
+          x = name,
+          n = 1,
+          mode = 'character'
+        )
+        invisible(name)
       }
     )
   )

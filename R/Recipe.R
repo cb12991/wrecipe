@@ -1,4 +1,65 @@
+#' R6 Class providing standard format for recipes
+#'
+#' This class will encapsulate various recipe elements into a standard,
+#' consistent format. Once the object is built, it will be easier to work with
+#' when incorporating in other projects, i.e., a website.
+#'
+#' @section Creating the recipe object:
+#' A `Recipe` is an R6 object, and it can be created using `Recipe$new()`. A
+#' `Recipe` has several different fields that you could pass as arguments
+#' when initializing, however, you only need to provide a name at first; other
+#' elements can be added at a later time. Each field is outlined as follows:
+#' \describe{
+#'   \item{name}{
+#'     Scalar character vector; the name of the recipe.
+#'   }
+#'   \item{summary}{
+#'     Character vector; a brief description of what the recipe makes.
+#'   }
+#'   \item{images}{
+#'     A list of `Image` objects associated with this `Recipe`.
+#'   }
+#'   \item{ingredients}{
+#'     A list of `Ingredient` objects associated with this `Recipe`.
+#'   }
+#'   \item{equipment}{
+#'     A list of `Equipment` objects associated with this `Recipe`.
+#'   }
+#'   \item{instructions}{
+#'     A list of `Instruction` objects associated with this `Recipe`.
+#'   }
+#'   \item{servings}{
+#'     Scalar numeric vector; the number of serving the recipe will produce.
+#'   }
+#' }
+#'
+#' @section Uses for the recipe object:
+#' This class was created mainly to store recipes in a consistent format. Recipe
+#' elements can be manually provided, but I've been webscraping and adding
+#' elements that way. Once fully built, different recipe elements can be
+#' accessed using the `$` operator.
+#'
+#' @examples
+#'
+#' # An example recipe for spaghetti sauce:
+#' r <- Recipe$new('Spaghetti Sauce')
+#' print(r)
+#'
+#' # Add a summary:
+#' r$summary <- paste(
+#'   'This is my grandmother\'s secret recipe for her award-winning spaghetti',
+#'   'sauce. It has been passed down for generations and dates back to the',
+#'   '1700\'s!'
+#' )
+#' print(r)
+#'
+#' # Other elements are additional R6 classes. See the help page of each for
+#' # additional information.
+#'
 #' @export
+#' @name Recipe
+NULL
+
 Recipe <- R6::R6Class(
   classname = 'Recipe',
 
@@ -10,7 +71,7 @@ Recipe <- R6::R6Class(
       ingredients = NULL,
       equipment = NULL,
       instructions = NULL,
-      servings = 0
+      servings = NA_real_
     ) {
       private$.name$value <- private$.name$validate(name)
       private$.summary$value <- private$.summary$validate(summary)
@@ -40,7 +101,7 @@ Recipe <- R6::R6Class(
         private$.name$value
       } else {
         private$.name$value <- private$.name$validate(value)
-        self
+        invisible(self)
       }
     },
     summary = function(value) {
@@ -48,7 +109,7 @@ Recipe <- R6::R6Class(
         private$.summary$value
       } else {
         private$.summary$value <- private$.summary$validate(value)
-        self
+        invisible(self)
       }
     },
     images = function(value) {
@@ -56,7 +117,7 @@ Recipe <- R6::R6Class(
         private$.images$value
       } else {
         private$.images$value <- private$.images$validate(value)
-        self
+        invisible(self)
       }
     },
     ingredients = function(value) {
@@ -64,7 +125,7 @@ Recipe <- R6::R6Class(
         private$.ingredients$value
       } else {
         private$.ingredients$value <- private$.ingredients$validate(value)
-        self
+        invisible(self)
       }
     },
     equipment = function(value) {
@@ -72,7 +133,7 @@ Recipe <- R6::R6Class(
         private$.equipment$value
       } else {
         private$.equipment$value <- private$.equipment$validate(value)
-        self
+        invisible(self)
       }
     },
     instructions = function(value) {
@@ -80,7 +141,7 @@ Recipe <- R6::R6Class(
         private$.instructions$value
       } else {
         private$.instructions$value <- private$.instructions$validate(value)
-        self
+        invisible(self)
       }
     },
     servings = function(value) {
@@ -88,7 +149,7 @@ Recipe <- R6::R6Class(
         private$.servings$value
       } else {
         private$.servings$value <- private$.servings$validate(value)
-        self
+        invisible(self)
       }
     }
   ),
@@ -96,124 +157,66 @@ Recipe <- R6::R6Class(
   private = list(
     .name = list(
       value = NULL,
-      validate = function(x) {
-        if (is.null(x)) {
-          cli::cli_abort(
-            'All {.cls Recipe} objects must at minimum have a name.'
-          )
-        }
-        if (length(x) != 1) {
-          cli::cli_abort(c(
-            'Length != 1',
-            i = 'Only provide a single name for the {.cls Recipe}.'
-          ))
-        }
-        if (!is.character(x)) {
-          cli::cli_abort(
-            'Is not a character vector'
-          )
-        }
-        invisible(x)
+      validate = function(name) {
+        lapply(
+          X = list(check_required, check_length, check_mode),
+          FUN = rlang::exec,
+          x = name,
+          n = 1,
+          mode = 'character'
+        )
+        invisible(name)
       }
     ),
     .summary =  list(
       value = NULL,
-      validate = function(x) {
-        if (!is.null(x)) {
-          if (!is.character(x)) {
-            cli::cli_abort(
-              'Is not a character vector'
-            )
-          }
-        }
-        invisible(x)
+      validate = function(summary) {
+        check_mode(summary, 'character')
+        invisible(summary)
       }
     ),
     .images =  list(
       value = NULL,
-      validate = function(x) {
-        x <- as.list(x)
-        if (length(x)) {
-          if (!all(y <- vapply(x, inherits, logical(1), 'Image'))) {
-            cli::cli_abort(c(
-              'All elements not of class {.cls Image}',
-              '',
-              i = '{cli::qty(y)}Element{?s} {which(y)} have class{?es}
-                   {.cls {class(x[y])}}{?, respectively}.'
-            ))
-          }
-        }
-        invisible(x)
+      validate = function(images) {
+        check_same_class(images, class = 'Image')
+        invisible(images)
       }
     ),
     .ingredients =  list(
       value = NULL,
-      validate = function(x) {
-        x <- as.list(x)
-        if (length(x)) {
-          if (!all(y <- vapply(x, inherits, logical(1), 'Ingredient'))) {
-            cli::cli_abort(c(
-              'All elements not of class {.cls Ingredient}',
-              '',
-              i = '{cli::qty(y)}Element{?s} {which(y)} have class{?es}
-                   {.cls {class(x[y])}}{?, respectively}.'
-            ))
-          }
-        }
-        invisible(x)
+      validate = function(ingredients) {
+        check_same_class(ingredients, class = 'Ingredient')
+        invisible(ingredients)
       }
     ),
     .equipment =  list(
       value = NULL,
-      validate = function(x) {
-        x <- as.list(x)
-        if (length(x)) {
-          if (!all(y <- vapply(x, inherits, logical(1), 'Equipment'))) {
-            cli::cli_abort(c(
-              'All elements not of class {.cls Equipment}',
-              '',
-              i = '{cli::qty(y)}Element{?s} {which(y)} have class{?es}
-                   {.cls {class(x[y])}}{?, respectively}.'
-            ))
-          }
-        }
-        invisible(x)
+      validate = function(equipment) {
+        check_same_class(equipment, class = 'Equipment')
+        invisible(equipment)
       }
     ),
     .instructions =  list(
       value = NULL,
-      validate = function(x) {
-        x <- as.list(x)
-        if (length(x)) {
-          if (!all(y <- vapply(x, inherits, logical(1), 'Instruction'))) {
-            cli::cli_abort(c(
-              'All elements not of class {.cls Instruction}',
-              '',
-              i = '{cli::qty(y)}Element{?s} {which(y)} have class{?es}
-                   {.cls {class(x[y])}}{?, respectively}.'
-            ))
-          }
-        }
-        invisible(x)
+      validate = function(instructions) {
+        check_same_class(instructions, class = 'Instruction')
+        invisible(instructions)
       }
     ),
     .servings =  list(
-      value = 0,
-      validate = function(x) {
-        if (!is.numeric(x)) {
-          cli::cli_abort(
-            'Is not a number'
-          )
-        }
-        if (x < 0) {
-          cli::cli_abort(c(
-            'Must be greater than or equal to 0',
-            '',
-            i = 'Setting {.field servings} to 0 indicates that they have not
-                 yet been determined.'
-          ))
-        }
-        invisible(x)
+      value = NULL,
+      validate = function(servings) {
+        lapply(
+          X = list(check_length, check_mode, check_number_in_range),
+          FUN = rlang::exec,
+          x = servings,
+          n = 1,
+          mode = 'numeric',
+          range = c(0, Inf),
+          inclusive = TRUE,
+          allow_na = TRUE
+        )
+        invisible(servings)
       }
     )
   )
