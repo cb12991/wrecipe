@@ -46,14 +46,14 @@ Image <- R6::R6Class(
       name = basename(file %||% url)
     ) {
       if (is.null(file) & is.null(url)) {
-        cli::cli_abort('Must provide either a URL or file path to an image.')
+        cli::cli_abort(
+          'Must provide either a URL or file path to an image.',
+          call = rlang::caller_env()
+        )
       }
-
-      private$.file$value <- private$.file$validate(file)
-      private$.url$value <- private$.url$validate(url)
-      private$.name$value <- private$.name$validate(name)
-
-      invisible(self)
+      private$.file$value <- private$.file$validate(file, rlang::caller_env())
+      private$.url$value <- private$.url$validate(url, rlang::caller_env())
+      private$.name$value <- private$.name$validate(name, rlang::caller_env())
     },
 
     download = function() {
@@ -73,7 +73,7 @@ Image <- R6::R6Class(
       if (!grepl('^image', fmt)) {
         cli::cli_abort(
           'Image format not recognized: {.field {fmt}}.',
-          call = caller_env()
+          call = rlang::caller_env()
         )
       }
 
@@ -103,7 +103,17 @@ Image <- R6::R6Class(
       if (missing(value)) {
         private$.file$value
       } else {
-        private$.file$value <- private$.file$validate(value)
+        if (is.null(value) && is.null(private$.url$value)) {
+          cli::cli_abort(
+            'Cannot set {.field file} to {.value NULL} if {.field url} is
+             {.value NULL}.',
+            call = rlang::caller_env()
+          )
+        }
+        private$.file$value <- private$.file$validate(
+          value,
+          error_call = rlang::caller_env()
+        )
         invisible(self)
       }
     },
@@ -111,7 +121,17 @@ Image <- R6::R6Class(
       if (missing(value)) {
         private$.url$value
       } else {
-        private$.url$value <- private$.url$validate(value)
+        if (is.null(value) && is.null(private$.file$value)) {
+          cli::cli_abort(
+            'Cannot set {.field url} to {.value NULL} if {.field file} is
+             {.value NULL}.',
+            call = rlang::caller_env()
+          )
+        }
+        private$.url$value <- private$.url$validate(
+          value,
+          error_call = rlang::caller_env()
+        )
         invisible(self)
       }
     },
@@ -119,7 +139,7 @@ Image <- R6::R6Class(
       if (missing(value)) {
         private$.name$value
       } else {
-        private$.name$value <- private$.name$validate(value)
+        private$.name$value <- private$.name$validate(value, rlang::caller_env())
         invisible(self)
       }
     }
@@ -128,20 +148,15 @@ Image <- R6::R6Class(
   private = list(
     .file = list(
       value = NULL,
-      validate = function(file) {
-        if (is.null(file) && is.null(private$.url$value)) {
-          cli::cli_abort(
-            'Cannot set {.field file} to {.value NULL} if {.field url} is
-             {.value NULL}.',
-            call = caller_env()
-          )
-        }
+      validate = function(file, error_call) {
         lapply(
           X = list(check_length, check_mode, check_file_exists),
           FUN = rlang::exec,
           x = file,
           n = 1,
-          mode = 'character'
+          allow_null = TRUE,
+          mode = 'character',
+          call = error_call
         )
         invisible(file)
       }
@@ -149,20 +164,15 @@ Image <- R6::R6Class(
 
     .url = list(
       value = NULL,
-      validate = function(url) {
-        if (is.null(url) && is.null(private$.file$value)) {
-          cli::cli_abort(
-            'Cannot set {.field url} to {.value NULL} if {.field file} is
-             {.value NULL}.',
-            call = caller_env()
-          )
-        }
+      validate = function(url, error_call) {
         lapply(
           X = list(check_length, check_mode, check_url_connection),
           FUN = rlang::exec,
           x = url,
           n = 1,
-          mode = 'character'
+          allow_null = TRUE,
+          mode = 'character',
+          call = error_call
         )
         invisible(url)
       }
@@ -170,13 +180,14 @@ Image <- R6::R6Class(
 
     .name = list(
       value = NULL,
-      validate = function(name) {
+      validate = function(name, error_call) {
         lapply(
           X = list(check_length, check_mode),
           FUN = rlang::exec,
           x = name,
           n = 1,
-          mode = 'character'
+          mode = 'character',
+          call = error_call
         )
         invisible(name)
       }
