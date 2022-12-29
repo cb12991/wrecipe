@@ -1,26 +1,22 @@
 #' R6 Class for a recipe ingredient
 #'
-#' @section Creating the ingredient object:
 #' An `Ingredient` object is an R6 object, and it can be created using
-#' `Ingredient$new()`. The name of the ingredient piece is required, but the
-#' amount and unit of the ingredient can be omitted for a generalized
+#' `Ingredient$new()`. A `name` field for the ingredient piece is required, but
+#' the amount and unit of the ingredient can be omitted for a generalized
 #' ingredient (e.g., canola oil).
 #'
-#' \describe{
-#'   \item{name}{
-#'     Scalar character vector; the name of the piece of equipment.
-#'   }
-#'   \item{amount}{
-#'     Scalar numeric vector; the numeric quantity required of the ingredient in
-#'     a recipe. To be used in conjunction with "unit".
-#'   }
-#'   \item{unit}{
-#'     Scalar character vector; the unit of measurement for the ingredient
-#'     (e.g., cup, gallon, handful, etc.). To be used in conjunction with
-#'     "amount".
-#'   }
-#' }
+#' @field name
+#'   Scalar character vector; the name of the piece of equipment.
+#' @field amount
+#'   Scalar numeric vector; the numeric quantity required of the ingredient in
+#'   a recipe. To be used in conjunction with "unit".
+#' @field unit
+#'   Scalar character vector; the unit of measurement for the ingredient
+#'   (e.g., cup, gallon, handful, etc.). To be used in conjunction with
+#'   "amount".
 #'
+#' @family recipe components
+#' @seealso [Recipe]
 #' @export
 #' @name Ingredient
 NULL
@@ -33,6 +29,12 @@ Ingredient <- R6::R6Class(
       private$.name$value <- private$.name$validate(name)
       private$.amount$value <- private$.amount$validate(amount)
       private$.unit$value <- private$.unit$validate(unit)
+    },
+
+    print = function() {
+      cat('<Ingredient>')
+      cat(' ', private$.amount$value, private$.unit$value, private$.name$value)
+      invisible(self)
     }
   ),
 

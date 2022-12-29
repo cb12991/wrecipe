@@ -4,22 +4,25 @@
 \alias{Equipment}
 \title{R6 Class for recipe equipment}
 \description{
-R6 Class for recipe equipment
-}
-\section{Creating the equipment object}{
-
 An \code{Equipment} object is an R6 object, and it can be created using
-\code{Equipment$new()}. The name of the equipment piece is required, and the
-quantity can be omitted if desired.
+\code{Equipment$new()}. A \code{name} field for the equipment piece is required, and a
+\code{quantity} field can be added if desired.
+}
+\section{Fields}{
 
 \describe{
-\item{name}{
-Scalar character vector; the name of the piece of equipment.
-}
-\item{quantity}{
-Scalar numeric vector; the number of equipment units needed. Defaults to
-1.
-}
-}
-}
+\item{\code{name}}{Scalar character vector; the name of the piece of equipment.}
 
+\item{\code{quantity}}{Scalar numeric vector; the number of equipment units needed. Defaults to
+1.}
+}}
+
+\seealso{
+\link{Recipe}
+
+Other recipe components: 
+\code{\link{Image}},
+\code{\link{Ingredient}},
+\code{\link{Instruction}}
+}
+\concept{recipe components}

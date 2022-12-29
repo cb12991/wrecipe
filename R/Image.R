@@ -7,7 +7,7 @@
 #'
 #' This class also includes a method to "plot" the image given it is a
 #' recognized image format (.jpeg or .png as of now). This helps view which
-#' images to add to a `Recipe` object without having to open up the image
+#' images to add to a [Recipe] object without having to open up the image
 #' outside of RStudio.
 #'
 #' @section Creating the image object:
@@ -16,22 +16,19 @@
 #' upon initialization; the name of the image can be determined automatically if
 #' not provided.
 #'
-#' \describe{
-#'   \item{file}{
-#'     Scalar character vector; the path to an image file. This image needs to
-#'     be of JPEG or PNG format.
-#'   }
-#'   \item{url}{
-#'     Scalar character vector; the URL pointing to an image. Also needs to be
-#'     of JPEG or PNG format.
-#'   }
-#'   \item{name}{
-#'     Scalar character vector; the name of the image, for reference. You can
-#'     specify directly or omit and the name will be determined using the image
-#'     file path or URL.
-#'   }
-#' }
+#' @field file
+#'   Scalar character vector; the path to an image file. This image needs to
+#'   be of JPEG or PNG format.
+#' @field url
+#'   Scalar character vector; the URL pointing to an image. Also needs to be
+#'   of JPEG or PNG format.
+#' @field name
+#'   Scalar character vector; the name of the image, for reference. You can
+#'   specify directly or omit and the name will be determined using the image
+#'   file path or URL.
 #'
+#' @family recipe components
+#' @seealso [Recipe]
 #' @export
 #' @name Image
 NULL
@@ -54,6 +51,12 @@ Image <- R6::R6Class(
       private$.file$value <- private$.file$validate(file, rlang::caller_env())
       private$.url$value <- private$.url$validate(url, rlang::caller_env())
       private$.name$value <- private$.name$validate(name, rlang::caller_env())
+    },
+
+    print = function() {
+      cat('<Image>')
+      cat(strwrap(private$.name$value, prefix = '  '))
+      invisible(self)
     },
 
     download = function() {

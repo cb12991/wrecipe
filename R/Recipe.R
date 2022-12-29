@@ -7,40 +7,31 @@
 #' @section Creating the recipe object:
 #' A `Recipe` is an R6 object, and it can be created using `Recipe$new()`. A
 #' `Recipe` has several different fields that you could pass as arguments
-#' when initializing, however, you only need to provide a name at first; other
-#' elements can be added at a later time. Each field is outlined as follows:
-#' \describe{
-#'   \item{name}{
-#'     Scalar character vector; the name of the recipe.
-#'   }
-#'   \item{summary}{
-#'     Character vector; a brief description of what the recipe makes.
-#'   }
-#'   \item{images}{
-#'     A list of `Image` objects associated with this `Recipe`.
-#'   }
-#'   \item{ingredients}{
-#'     A list of `Ingredient` objects associated with this `Recipe`.
-#'   }
-#'   \item{equipment}{
-#'     A list of `Equipment` objects associated with this `Recipe`.
-#'   }
-#'   \item{instructions}{
-#'     A list of `Instruction` objects associated with this `Recipe`.
-#'   }
-#'   \item{servings}{
-#'     Scalar numeric vector; the number of serving the recipe will produce.
-#'   }
-#' }
+#' when initializing, however, you only need to provide the `name` when first
+#' initializing; other fields can be added at a later time.
+#'
+#' @field name
+#'   Scalar character vector; the name of the recipe.
+#' @field summary
+#'   Character vector; a brief description of what the recipe makes.
+#' @field images
+#'   A list of [Image] objects associated with this `Recipe`.
+#' @field ingredients
+#'   A list of [Ingredient] objects associated with this `Recipe`.
+#' @field equipment
+#'   A list of [Equipment] objects associated with this `Recipe`.
+#' @field instructions
+#'   A list of [Instruction] objects associated with this `Recipe`.
+#' @field servings
+#'   Scalar numeric vector; the number of serving the recipe will produce.
 #'
 #' @section Uses for the recipe object:
-#' This class was created mainly to store recipes in a consistent format. Recipe
-#' elements can be manually provided, but I've been webscraping and adding
-#' elements that way. Once fully built, different recipe elements can be
+#' This class was created mainly to store recipes in a consistent format.
+#' `Recipe` fields can be manually provided, but I've been webscraping and
+#' adding fields that way. Once fully built, different recipe fields can be
 #' accessed using the `$` operator.
 #'
 #' @examples
-#'
 #' # An example recipe for spaghetti sauce:
 #' r <- Recipe$new('Spaghetti Sauce')
 #' print(r)
@@ -56,6 +47,7 @@
 #' # Other elements are additional R6 classes. See the help page of each for
 #' # additional information.
 #'
+#' @seealso [Equipment] [Instruction] [Image] [Ingredient]
 #' @export
 #' @name Recipe
 NULL

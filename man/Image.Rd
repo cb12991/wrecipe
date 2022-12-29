@@ -12,30 +12,37 @@ to download the image.
 \details{
 This class also includes a method to "plot" the image given it is a
 recognized image format (.jpeg or .png as of now). This helps view which
-images to add to a \code{Recipe} object without having to open up the image
+images to add to a \link{Recipe} object without having to open up the image
 outside of RStudio.
 }
+\section{Fields}{
+
+\describe{
+\item{\code{file}}{Scalar character vector; the path to an image file. This image needs to
+be of JPEG or PNG format.}
+
+\item{\code{url}}{Scalar character vector; the URL pointing to an image. Also needs to be
+of JPEG or PNG format.}
+
+\item{\code{name}}{Scalar character vector; the name of the image, for reference. You can
+specify directly or omit and the name will be determined using the image
+file path or URL.}
+}}
+
 \section{Creating the image object}{
 
 An \code{Image} is an R6 object, and it can be created using
 \code{Image$new()}. A file path or URL pointing to a valid image is required
 upon initialization; the name of the image can be determined automatically if
 not provided.
-
-\describe{
-\item{file}{
-Scalar character vector; the path to an image file. This image needs to
-be of JPEG or PNG format.
-}
-\item{url}{
-Scalar character vector; the URL pointing to an image. Also needs to be
-of JPEG or PNG format.
-}
-\item{name}{
-Scalar character vector; the name of the image, for reference. You can
-specify directly or omit and the name will be determined using the image
-file path or URL.
-}
-}
 }
 
+\seealso{
+\link{Recipe}
+
+Other recipe components: 
+\code{\link{Equipment}},
+\code{\link{Ingredient}},
+\code{\link{Instruction}}
+}
+\concept{recipe components}

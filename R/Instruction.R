@@ -1,16 +1,14 @@
 #' R6 Class for recipe instructions
 #'
-#' @section Creating the instruction object:
 #' An `Instruction` is an R6 object, and it can be created using
-#' `Instruction$new()`. It only has one element, `text`, that contains the
+#' `Instruction$new()`. It only has one field, `text`, that contains the
 #' instruction detail.
 #'
-#' \describe{
-#'   \item{text}{
-#'     Scalar character vector; the wording of one step of a recipe.
-#'   }
-#' }
+#' @field text
+#'   Scalar character vector; the wording of one step of a recipe.
 #'
+#' @family recipe components
+#' @seealso [Recipe]
 #' @export
 #' @name Instruction
 NULL
@@ -21,6 +19,12 @@ Instruction <- R6::R6Class(
   public = list(
     initialize = function(text) {
       private$.text$value <- private$.text$validate(name)
+    },
+
+    print = function() {
+      cat('<Instruction>')
+      cat(strwrap(private$.text$value, prefix = '  '), sep = '\n')
+      invisible(self)
     }
   ),
 

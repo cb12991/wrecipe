@@ -8,47 +8,41 @@ This class will encapsulate various recipe elements into a standard,
 consistent format. Once the object is built, it will be easier to work with
 when incorporating in other projects, i.e., a website.
 }
+\section{Fields}{
+
+\describe{
+\item{\code{name}}{Scalar character vector; the name of the recipe.}
+
+\item{\code{summary}}{Character vector; a brief description of what the recipe makes.}
+
+\item{\code{images}}{A list of \link{Image} objects associated with this \code{Recipe}.}
+
+\item{\code{ingredients}}{A list of \link{Ingredient} objects associated with this \code{Recipe}.}
+
+\item{\code{equipment}}{A list of \link{Equipment} objects associated with this \code{Recipe}.}
+
+\item{\code{instructions}}{A list of \link{Instruction} objects associated with this \code{Recipe}.}
+
+\item{\code{servings}}{Scalar numeric vector; the number of serving the recipe will produce.}
+}}
+
 \section{Creating the recipe object}{
 
 A \code{Recipe} is an R6 object, and it can be created using \code{Recipe$new()}. A
 \code{Recipe} has several different fields that you could pass as arguments
-when initializing, however, you only need to provide a name at first; other
-elements can be added at a later time. Each field is outlined as follows:
-\describe{
-\item{name}{
-Scalar character vector; the name of the recipe.
-}
-\item{summary}{
-Character vector; a brief description of what the recipe makes.
-}
-\item{images}{
-A list of \code{Image} objects associated with this \code{Recipe}.
-}
-\item{ingredients}{
-A list of \code{Ingredient} objects associated with this \code{Recipe}.
-}
-\item{equipment}{
-A list of \code{Equipment} objects associated with this \code{Recipe}.
-}
-\item{instructions}{
-A list of \code{Instruction} objects associated with this \code{Recipe}.
-}
-\item{servings}{
-Scalar numeric vector; the number of serving the recipe will produce.
-}
-}
+when initializing, however, you only need to provide the \code{name} when first
+initializing; other fields can be added at a later time.
 }
 
 \section{Uses for the recipe object}{
 
-This class was created mainly to store recipes in a consistent format. Recipe
-elements can be manually provided, but I've been webscraping and adding
-elements that way. Once fully built, different recipe elements can be
+This class was created mainly to store recipes in a consistent format.
+\code{Recipe} fields can be manually provided, but I've been webscraping and
+adding fields that way. Once fully built, different recipe fields can be
 accessed using the \code{$} operator.
 }
 
 \examples{
-
 # An example recipe for spaghetti sauce:
 r <- Recipe$new('Spaghetti Sauce')
 print(r)
@@ -64,4 +58,7 @@ print(r)
 # Other elements are additional R6 classes. See the help page of each for
 # additional information.
 
+}
+\seealso{
+\link{Equipment} \link{Instruction} \link{Image} \link{Ingredient}
 }

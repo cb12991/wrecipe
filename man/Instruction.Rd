@@ -4,18 +4,22 @@
 \alias{Instruction}
 \title{R6 Class for recipe instructions}
 \description{
-R6 Class for recipe instructions
-}
-\section{Creating the instruction object}{
-
 An \code{Instruction} is an R6 object, and it can be created using
-\code{Instruction$new()}. It only has one element, \code{text}, that contains the
+\code{Instruction$new()}. It only has one field, \code{text}, that contains the
 instruction detail.
+}
+\section{Fields}{
 
 \describe{
-\item{text}{
-Scalar character vector; the wording of one step of a recipe.
-}
-}
-}
+\item{\code{text}}{Scalar character vector; the wording of one step of a recipe.}
+}}
 
+\seealso{
+\link{Recipe}
+
+Other recipe components: 
+\code{\link{Equipment}},
+\code{\link{Image}},
+\code{\link{Ingredient}}
+}
+\concept{recipe components}

@@ -4,28 +4,30 @@
 \alias{Ingredient}
 \title{R6 Class for a recipe ingredient}
 \description{
-R6 Class for a recipe ingredient
-}
-\section{Creating the ingredient object}{
-
 An \code{Ingredient} object is an R6 object, and it can be created using
-\code{Ingredient$new()}. The name of the ingredient piece is required, but the
-amount and unit of the ingredient can be omitted for a generalized
+\code{Ingredient$new()}. A \code{name} field for the ingredient piece is required, but
+the amount and unit of the ingredient can be omitted for a generalized
 ingredient (e.g., canola oil).
+}
+\section{Fields}{
 
 \describe{
-\item{name}{
-Scalar character vector; the name of the piece of equipment.
-}
-\item{amount}{
-Scalar numeric vector; the numeric quantity required of the ingredient in
-a recipe. To be used in conjunction with "unit".
-}
-\item{unit}{
-Scalar character vector; the unit of measurement for the ingredient
-(e.g., cup, gallon, handful, etc.). To be used in conjunction with
-"amount".
-}
-}
-}
+\item{\code{name}}{Scalar character vector; the name of the piece of equipment.}
 
+\item{\code{amount}}{Scalar numeric vector; the numeric quantity required of the ingredient in
+a recipe. To be used in conjunction with "unit".}
+
+\item{\code{unit}}{Scalar character vector; the unit of measurement for the ingredient
+(e.g., cup, gallon, handful, etc.). To be used in conjunction with
+"amount".}
+}}
+
+\seealso{
+\link{Recipe}
+
+Other recipe components: 
+\code{\link{Equipment}},
+\code{\link{Image}},
+\code{\link{Instruction}}
+}
+\concept{recipe components}
