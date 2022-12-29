@@ -18,7 +18,7 @@ Instruction <- R6::R6Class(
 
   public = list(
     initialize = function(text) {
-      private$.text$value <- private$.text$validate(name)
+      private$.text$value <- private$.text$validate(text)
     },
 
     print = function() {
