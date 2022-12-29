@@ -54,9 +54,30 @@ to download the image.</p>
     <h2>Details</h2>
     <p>This class also includes a method to "plot" the image given it is a
 recognized image format (.jpeg or .png as of now). This helps view which
-images to add to a <code>Recipe</code> object without having to open up the image
+images to add to a <a href="Recipe.html">Recipe</a> object without having to open up the image
 outside of RStudio.</p>
     </div>
+    <div id="fields">
+    <h2>Fields</h2>
+    
+
+<dl><dt><code>file</code></dt>
+<dd><p>Scalar character vector; the path to an image file. This image needs to
+be of JPEG or PNG format.</p></dd>
+
+
+<dt><code>url</code></dt>
+<dd><p>Scalar character vector; the URL pointing to an image. Also needs to be
+of JPEG or PNG format.</p></dd>
+
+
+<dt><code>name</code></dt>
+<dd><p>Scalar character vector; the name of the image, for reference. You can
+specify directly or omit and the name will be determined using the image
+file path or URL.</p></dd>
+
+
+</dl></div>
     <div id="creating-the-image-object">
     <h2>Creating the image object</h2>
     
@@ -65,21 +86,15 @@ outside of RStudio.</p>
 <code>Image$new()</code>. A file path or URL pointing to a valid image is required
 upon initialization; the name of the image can be determined automatically if
 not provided.</p>
-<dl><dt>file</dt>
-<dd><p>Scalar character vector; the path to an image file. This image needs to
-be of JPEG or PNG format.</p></dd>
-
-<dt>url</dt>
-<dd><p>Scalar character vector; the URL pointing to an image. Also needs to be
-of JPEG or PNG format.</p></dd>
-
-<dt>name</dt>
-<dd><p>Scalar character vector; the name of the image, for reference. You can
-specify directly or omit and the name will be determined using the image
-file path or URL.</p></dd>
-
-
-</dl></div>
+    </div>
+    <div id="see-also">
+    <h2>See also</h2>
+    <div class="dont-index"><p><a href="Recipe.html">Recipe</a></p>
+<p>Other recipe components: 
+<code><a href="Equipment.html">Equipment</a></code>,
+<code><a href="Ingredient.html">Ingredient</a></code>,
+<code><a href="Instruction.html">Instruction</a></code></p></div>
+    </div>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

@@ -48,50 +48,65 @@ when incorporating in other projects, i.e., a website.</p>
     </div>
 
 
+    <div id="fields">
+    <h2>Fields</h2>
+    
+
+<dl><dt><code>name</code></dt>
+<dd><p>Scalar character vector; the name of the recipe.</p></dd>
+
+
+<dt><code>summary</code></dt>
+<dd><p>Character vector; a brief description of what the recipe makes.</p></dd>
+
+
+<dt><code>images</code></dt>
+<dd><p>A list of <a href="Image.html">Image</a> objects associated with this <code>Recipe</code>.</p></dd>
+
+
+<dt><code>ingredients</code></dt>
+<dd><p>A list of <a href="Ingredient.html">Ingredient</a> objects associated with this <code>Recipe</code>.</p></dd>
+
+
+<dt><code>equipment</code></dt>
+<dd><p>A list of <a href="Equipment.html">Equipment</a> objects associated with this <code>Recipe</code>.</p></dd>
+
+
+<dt><code>instructions</code></dt>
+<dd><p>A list of <a href="Instruction.html">Instruction</a> objects associated with this <code>Recipe</code>.</p></dd>
+
+
+<dt><code>servings</code></dt>
+<dd><p>Scalar numeric vector; the number of serving the recipe will produce.</p></dd>
+
+
+</dl></div>
     <div id="creating-the-recipe-object">
     <h2>Creating the recipe object</h2>
     
 
 <p>A <code>Recipe</code> is an R6 object, and it can be created using <code>Recipe$new()</code>. A
 <code>Recipe</code> has several different fields that you could pass as arguments
-when initializing, however, you only need to provide a name at first; other
-elements can be added at a later time. Each field is outlined as follows:</p><dl><dt>name</dt>
-<dd><p>Scalar character vector; the name of the recipe.</p></dd>
-
-<dt>summary</dt>
-<dd><p>Character vector; a brief description of what the recipe makes.</p></dd>
-
-<dt>images</dt>
-<dd><p>A list of <code>Image</code> objects associated with this <code>Recipe</code>.</p></dd>
-
-<dt>ingredients</dt>
-<dd><p>A list of <code>Ingredient</code> objects associated with this <code>Recipe</code>.</p></dd>
-
-<dt>equipment</dt>
-<dd><p>A list of <code>Equipment</code> objects associated with this <code>Recipe</code>.</p></dd>
-
-<dt>instructions</dt>
-<dd><p>A list of <code>Instruction</code> objects associated with this <code>Recipe</code>.</p></dd>
-
-<dt>servings</dt>
-<dd><p>Scalar numeric vector; the number of serving the recipe will produce.</p></dd>
-
-
-</dl></div>
+when initializing, however, you only need to provide the <code>name</code> when first
+initializing; other fields can be added at a later time.</p>
+    </div>
     <div id="uses-for-the-recipe-object">
     <h2>Uses for the recipe object</h2>
     
 
-<p>This class was created mainly to store recipes in a consistent format. Recipe
-elements can be manually provided, but I've been webscraping and adding
-elements that way. Once fully built, different recipe elements can be
+<p>This class was created mainly to store recipes in a consistent format.
+<code>Recipe</code> fields can be manually provided, but I've been webscraping and
+adding fields that way. Once fully built, different recipe fields can be
 accessed using the <code>$</code> operator.</p>
+    </div>
+    <div id="see-also">
+    <h2>See also</h2>
+    <div class="dont-index"><p><a href="Equipment.html">Equipment</a> <a href="Instruction.html">Instruction</a> <a href="Image.html">Image</a> <a href="Ingredient.html">Ingredient</a></p></div>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># An example recipe for spaghetti sauce:</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># An example recipe for spaghetti sauce:</span></span></span>
 <span class="r-in"><span><span class="va">r</span> <span class="op">&lt;-</span> <span class="va">Recipe</span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="st">'Spaghetti Sauce'</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;Recipe&gt;</span>
