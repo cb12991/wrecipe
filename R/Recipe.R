@@ -211,7 +211,7 @@ Recipe <- R6::R6Class(
           n = 1:2,
           mode = 'numeric',
           range = c(0, Inf),
-          inclusive = TRUE,
+          inclusive = FALSE,
           allow_na = TRUE
         )
         invisible(servings)
@@ -269,3 +269,34 @@ Recipe <- R6::R6Class(
     )
   )
 )
+
+#' @export
+str.Recipe <- function(
+  object,
+  ...,
+  indent.str = ' ',
+  nest.lev = 0,
+  max.level = 1
+) {
+  if (nest.lev != 0L) cat(' ')
+  cat('<Recipe> R6 Object\n')
+  env <- as.list(object)$.__enclos_env__
+  l <- list(
+    name = env$private$.name$value,
+    summary = env$private$.summary$value,
+    servings = env$private$.servings$value,
+    time = env$private$.time$value,
+    images = env$private$.images$value,
+    ingredients = env$private$.ingredients$value,
+    equipment = env$private$.equipment$value,
+    instructions = env$private$.instructions$value
+  )
+
+  utils::str(
+    l,
+    no.list = TRUE,
+    ...,
+    nest.lev = nest.lev + 1,
+    indent.str = indent.str
+  )
+}

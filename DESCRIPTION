@@ -19,7 +19,8 @@ Imports:
     jpeg,
     png,
     mime,
-    rlang
+    rlang,
+    utils
 RoxygenNote: 7.2.2
 Roxygen: list(markdown = TRUE)
 Config/testthat/edition: 3

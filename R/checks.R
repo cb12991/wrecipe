@@ -89,7 +89,7 @@ check_number_in_range <- function(
     call = call
   )
 
-  if ((x > range[1] - inclusive & x < range[2] + inclusive) %|% allow_na) {
+  if (all(x > range[1] - inclusive & x < range[2] + inclusive) %|% allow_na) {
     return(invisible(TRUE))
   }
   cli::cli_abort(
