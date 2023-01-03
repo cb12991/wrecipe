@@ -60,6 +60,24 @@ when incorporating in other projects, i.e., a website.</p>
 <dd><p>Character vector; a brief description of what the recipe makes.</p></dd>
 
 
+<dt><code>servings</code></dt>
+<dd><p>Numeric vector of length 1 or 2; if only one value provided, the number of
+servings the recipe produces. If 2 values provided, the minimum and maximum
+number of servings that the recipe produces.</p></dd>
+
+
+<dt><code>time</code></dt>
+<dd><p>(Optionally named) list of <a href="https://lubridate.tidyverse.org/reference/duration.html" class="external-link">lubridate::duration</a> objects (or objects that
+can be converted to <code><a href="https://lubridate.tidyverse.org/reference/duration.html" class="external-link">lubridate::duration</a></code> objects, i.e., the total number
+of seconds (since <code><a href="https://lubridate.tidyverse.org/reference/duration.html" class="external-link">lubridate::duration</a></code> objects are measured in seconds)
+or string representations of durations, e.g., "14 hours 20 minutes"); you
+can provide a list with only one element to represent the total recipe
+time, or you can provide a named list with elements that represent
+different time components, e.g., "active", "prep", etc.. Providing an
+unnamed lists with multiple elements will return an error because it is
+unclear which element corresponds to which time component.</p></dd>
+
+
 <dt><code>images</code></dt>
 <dd><p>A list of <a href="Image.html">Image</a> objects associated with this <code>Recipe</code>.</p></dd>
 
@@ -74,10 +92,6 @@ when incorporating in other projects, i.e., a website.</p>
 
 <dt><code>instructions</code></dt>
 <dd><p>A list of <a href="Instruction.html">Instruction</a> objects associated with this <code>Recipe</code>.</p></dd>
-
-
-<dt><code>servings</code></dt>
-<dd><p>Scalar numeric vector; the number of serving the recipe will produce.</p></dd>
 
 
 </dl></div>
@@ -101,7 +115,7 @@ accessed using the <code>$</code> operator.</p>
     </div>
     <div id="see-also">
     <h2>See also</h2>
-    <div class="dont-index"><p><a href="Equipment.html">Equipment</a> <a href="Instruction.html">Instruction</a> <a href="Image.html">Image</a> <a href="Ingredient.html">Ingredient</a></p></div>
+    <div class="dont-index"><p><a href="Image.html">Image</a> <a href="Ingredient.html">Ingredient</a> <a href="Equipment.html">Equipment</a> <a href="Instruction.html">Instruction</a> <a href="https://lubridate.tidyverse.org/reference/duration.html" class="external-link">lubridate::duration</a></p></div>
     </div>
 
     <div id="ref-examples">
@@ -114,6 +128,9 @@ accessed using the <code>$</code> operator.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Spaghetti Sauce</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Servings: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Total Time:  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Image Count: 0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Ingredient Count: 0</span>
@@ -134,6 +151,9 @@ accessed using the <code>$</code> operator.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   This is my grandmother's secret recipe for her award-winning</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   spaghetti sauce. It has been passed down for generations and dates</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   back to the 1700's!</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Servings: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Total Time:  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Image Count: 0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Ingredient Count: 0</span>
