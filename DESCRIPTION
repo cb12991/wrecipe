@@ -20,7 +20,8 @@ Imports:
     png,
     mime,
     rlang,
-    utils
+    utils,
+    prettyunits
 RoxygenNote: 7.2.2
 Roxygen: list(markdown = TRUE)
 Config/testthat/edition: 3

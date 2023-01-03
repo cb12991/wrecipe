@@ -95,10 +95,13 @@ Recipe <- R6::R6Class(
       cat('\n\n ', private$.name$value)
       cat('\n\n')
       cat(strwrap(private$.summary$value, prefix = '  '), sep = '\n')
-      cat('\n  Servings:', paste(sort(private$.servings$value), sep = '-'))
+      cat(
+        '\n  Servings:',
+        paste(sort(private$.servings$value), collapse = ' - ')
+      )
       cat(
         '\n  Total Time:',
-        lubridate::as.period(Reduce(sum, private$.time$value, numeric())),
+        prettyunits::pretty_sec(Reduce(sum, private$.time$value, numeric())),
         '\n'
       )
       cat('\n  Image Count:', length(private$.images$value))
