@@ -15,6 +15,20 @@ when incorporating in other projects, i.e., a website.
 
 \item{\code{summary}}{Character vector; a brief description of what the recipe makes.}
 
+\item{\code{servings}}{Numeric vector of length 1 or 2; if only one value provided, the number of
+servings the recipe produces. If 2 values provided, the minimum and maximum
+number of servings that the recipe produces.}
+
+\item{\code{time}}{(Optionally named) list of \link[lubridate:duration]{lubridate::duration} objects (or objects that
+can be converted to \code{lubridate::duration} objects, i.e., the total number
+of seconds (since \code{lubridate::duration} objects are measured in seconds)
+or string representations of durations, e.g., "14 hours 20 minutes"); you
+can provide a list with only one element to represent the total recipe
+time, or you can provide a named list with elements that represent
+different time components, e.g., "active", "prep", etc.. Providing an
+unnamed lists with multiple elements will return an error because it is
+unclear which element corresponds to which time component.}
+
 \item{\code{images}}{A list of \link{Image} objects associated with this \code{Recipe}.}
 
 \item{\code{ingredients}}{A list of \link{Ingredient} objects associated with this \code{Recipe}.}
@@ -22,8 +36,6 @@ when incorporating in other projects, i.e., a website.
 \item{\code{equipment}}{A list of \link{Equipment} objects associated with this \code{Recipe}.}
 
 \item{\code{instructions}}{A list of \link{Instruction} objects associated with this \code{Recipe}.}
-
-\item{\code{servings}}{Scalar numeric vector; the number of serving the recipe will produce.}
 }}
 
 \section{Creating the recipe object}{
@@ -60,5 +72,5 @@ print(r)
 
 }
 \seealso{
-\link{Equipment} \link{Instruction} \link{Image} \link{Ingredient}
+\link{Image} \link{Ingredient} \link{Equipment} \link{Instruction} \link[lubridate:duration]{lubridate::duration}
 }

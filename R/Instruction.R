@@ -23,7 +23,7 @@ Instruction <- R6::R6Class(
 
     print = function() {
       cat('<Instruction>')
-      cat(strwrap(private$.text$value, prefix = '  '), sep = '\n')
+      cat(' ', strwrap(private$.text$value, prefix = '  '), sep = '\n')
       invisible(self)
     }
   ),

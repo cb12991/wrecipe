@@ -22,11 +22,12 @@ check_length <- function(
     allow_null = FALSE,
     ...
 ) {
-  if ((allow_null && length(x) == 0) | (length(x) == n)) {
+  if ((allow_null && length(x) == 0) | (length(x) %in% n)) {
     return(invisible(TRUE))
   }
   cli::cli_abort(
-    '{.arg {arg}} must have size {n}, not size {length(x)}.',
+    '{.arg {arg}} must have size {cli::cli_vec(n, list("vec-last" = ", or ",
+     "vec-sep2" = " or "))}, not size {length(x)}.',
     arg = arg,
     call = call
   )

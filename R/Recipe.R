@@ -14,6 +14,20 @@
 #'   Scalar character vector; the name of the recipe.
 #' @field summary
 #'   Character vector; a brief description of what the recipe makes.
+#' @field servings
+#'   Numeric vector of length 1 or 2; if only one value provided, the number of
+#'   servings the recipe produces. If 2 values provided, the minimum and maximum
+#'   number of servings that the recipe produces.
+#' @field time
+#'   (Optionally named) list of [lubridate::duration] objects (or objects that
+#'   can be converted to `lubridate::duration` objects, i.e., the total number
+#'   of seconds (since `lubridate::duration` objects are measured in seconds)
+#'   or string representations of durations, e.g., "14 hours 20 minutes"); you
+#'   can provide a list with only one element to represent the total recipe
+#'   time, or you can provide a named list with elements that represent
+#'   different time components, e.g., "active", "prep", etc.. Providing an
+#'   unnamed lists with multiple elements will return an error because it is
+#'   unclear which element corresponds to which time component.
 #' @field images
 #'   A list of [Image] objects associated with this `Recipe`.
 #' @field ingredients
@@ -22,8 +36,7 @@
 #'   A list of [Equipment] objects associated with this `Recipe`.
 #' @field instructions
 #'   A list of [Instruction] objects associated with this `Recipe`.
-#' @field servings
-#'   Scalar numeric vector; the number of serving the recipe will produce.
+#'
 #'
 #' @section Uses for the recipe object:
 #' This class was created mainly to store recipes in a consistent format.
@@ -47,7 +60,7 @@
 #' # Other elements are additional R6 classes. See the help page of each for
 #' # additional information.
 #'
-#' @seealso [Equipment] [Instruction] [Image] [Ingredient]
+#' @seealso [Image] [Ingredient] [Equipment] [Instruction] [lubridate::duration]
 #' @export
 #' @name Recipe
 NULL
@@ -59,19 +72,22 @@ Recipe <- R6::R6Class(
     initialize = function(
       name,
       summary = NA_character_,
+      servings = NA_real_,
+      time = NULL,
       images = NULL,
       ingredients = NULL,
       equipment = NULL,
-      instructions = NULL,
-      servings = NA_real_
+      instructions = NULL
     ) {
       private$.name$value <- private$.name$validate(name)
       private$.summary$value <- private$.summary$validate(summary)
+      private$.servings$value <- private$.servings$validate(servings)
+      private$.time$value <- private$.time$validate(time)
       private$.images$value <- private$.images$validate(images)
       private$.ingredients$value <- private$.ingredients$validate(ingredients)
       private$.equipment$value <- private$.equipment$validate(equipment)
       private$.instructions$value <- private$.instructions$validate(instructions)
-      private$.servings$value <- private$.servings$validate(servings)
+
     },
 
     print = function() {
@@ -79,11 +95,21 @@ Recipe <- R6::R6Class(
       cat('\n\n ', private$.name$value)
       cat('\n\n')
       cat(strwrap(private$.summary$value, prefix = '  '), sep = '\n')
+      cat('\n  Servings:', paste(sort(private$.servings$value), sep = '-'))
+      cat(
+        '\n  Total Time:',
+        lubridate::as.period(Reduce(sum, private$.time$value, numeric())),
+        '\n'
+      )
       cat('\n  Image Count:', length(private$.images$value))
       cat('\n  Ingredient Count:', length(private$.ingredients$value))
       cat('\n  Equipment Count:', length(private$.equipment$value))
       cat('\n  Instruction Count:', length(private$.instructions$value))
       invisible(self)
+    },
+
+    export = function(file = '.') {
+      saveRDS(self, file = file)
     }
   ),
 
@@ -101,6 +127,22 @@ Recipe <- R6::R6Class(
         private$.summary$value
       } else {
         private$.summary$value <- private$.summary$validate(value)
+        invisible(self)
+      }
+    },
+    servings = function(value) {
+      if (missing(value)) {
+        private$.servings$value
+      } else {
+        private$.servings$value <- private$.servings$validate(value)
+        invisible(self)
+      }
+    },
+    time = function(value) {
+      if (missing(value)) {
+        private$.time$value
+      } else {
+        private$.time$value <- private$.time$validate(value)
         invisible(self)
       }
     },
@@ -135,14 +177,6 @@ Recipe <- R6::R6Class(
         private$.instructions$value <- private$.instructions$validate(value)
         invisible(self)
       }
-    },
-    servings = function(value) {
-      if (missing(value)) {
-        private$.servings$value
-      } else {
-        private$.servings$value <- private$.servings$validate(value)
-        invisible(self)
-      }
     }
   ),
 
@@ -165,6 +199,44 @@ Recipe <- R6::R6Class(
       validate = function(summary) {
         check_mode(summary, 'character')
         invisible(summary)
+      }
+    ),
+    .servings =  list(
+      value = NULL,
+      validate = function(servings) {
+        lapply(
+          X = list(check_length, check_mode, check_number_in_range),
+          FUN = rlang::exec,
+          x = servings,
+          n = 1:2,
+          mode = 'numeric',
+          range = c(0, Inf),
+          inclusive = TRUE,
+          allow_na = TRUE
+        )
+        invisible(servings)
+      }
+    ),
+    .time =  list(
+      value = NULL,
+      validate = function(time) {
+        time <- rlang::try_fetch(
+          lapply(time, lubridate::as.duration),
+          error = function(cnd) {
+            rlang::abort(
+              'Can\'t convert to duration object.',
+              parent = cnd,
+              call = rlang::caller_env()
+            )
+          }
+        )
+        lapply(
+          X = time,
+          FUN = check_number_in_range,
+          range = c(0, Inf),
+          inclusive = FALSE
+        )
+        invisible(time)
       }
     ),
     .images =  list(
@@ -193,22 +265,6 @@ Recipe <- R6::R6Class(
       validate = function(instructions) {
         check_same_class(instructions, class = 'Instruction')
         invisible(instructions)
-      }
-    ),
-    .servings =  list(
-      value = NULL,
-      validate = function(servings) {
-        lapply(
-          X = list(check_length, check_mode, check_number_in_range),
-          FUN = rlang::exec,
-          x = servings,
-          n = 1,
-          mode = 'numeric',
-          range = c(0, Inf),
-          inclusive = TRUE,
-          allow_na = TRUE
-        )
-        invisible(servings)
       }
     )
   )
