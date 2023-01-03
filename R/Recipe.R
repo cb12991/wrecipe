@@ -111,7 +111,7 @@ Recipe <- R6::R6Class(
       invisible(self)
     },
 
-    export = function(file = '.') {
+    export = function(file = 'recipe_data.Rds') {
       saveRDS(self, file = file)
     }
   ),
